@@ -94,6 +94,5 @@ cp /etc/apt/trusted.gpg "$directory/trusted-keys.gpg"
 # Create archive
 cd "$directory"
 tar -czf "$archive" *
-chmod 0777 "$archive"
 cd "$OLDPWD"
 rm -rf "$directory"
