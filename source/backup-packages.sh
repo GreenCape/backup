@@ -11,16 +11,30 @@ fi
 
 # Get option arguments
 has_error="no"
-directory="backup"
+directory="packages.backup.d"
 
-while getopts ":d" opt
+INPUT=$(getopt -n "$0" -o d: --long "directory:" -n "GreenCape Package Backup" -- "$@")
+if [ $? -ne 0 ]
+then
+    exit 1
+fi
+eval set -- "$INPUT"
+
+while true
 do
-    case $opt in
-        d)  # directory
-            directory=$OPTARG
+    case "$1" in
+        -d|--directory)
+            directory=$2
+            shift 2
             ;;
-        \?) # unknown
+        --)
+            shift
+            break
+            ;;
+        *) # unknown
             has_error="yes"
+            shift
+            break
             ;;
     esac
 done
@@ -32,7 +46,7 @@ then
     echo "Usage: "$(basename $0)" [-d directory]"
     echo ""
     echo "  -d directory   The target directory for the package dump."
-    echo "                 If ommitted, 'backup' is used."
+    echo "                 If ommitted, 'packages.backup.d' is used."
     echo "                 If the path is relative, i.e. not starting with a slash '/',"
     echo "                 it is relative to the current directory."
     echo ""
