@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # @see http://wiki.ubuntuusers.de/Paketverwaltung/Tipps#Paketliste-zur-Wiederherstellung-erzeugen
 
