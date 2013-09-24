@@ -1,23 +1,25 @@
 #!/bin/bash
 
+# Default name of the package archive
+archive="packages.tar.gz"
+
+# Name of the temporary directory
+directory="packages.tmp"$$".d"
+
 usage () {
     echo ""
     echo "Usage: "$(basename $0)" [options]"
     echo ""
-    echo "  -d directory | --directory=directory"
-    echo "                 The target directory for the package dump."
-    echo "                 If ommitted, '$directory' is used."
-    echo "                 If the path is relative, i.e. not starting with a slash '/',"
-    echo "                 it is relative to the current directory."
-    echo "  -h | --help    Show this messsage"
+    echo "  -a, --archive=filename   The filename for the package dump."
+    echo "                 If ommitted, '$archive' is used."
+    echo "  -h, --help     Show this messsage"
     echo ""
 }
 
 # Get option arguments
 has_error="no"
-directory="packages.backup.d"
 
-INPUT=$(getopt -n "$0" -o d:h --long "directory:,help" -n "GreenCape Package Backup" -- "$@")
+INPUT=$(getopt -n "$0" -o a:h --long "archive:,help" -n "GreenCape Package Backup" -- "$@")
 if [ $? -ne 0 ]
 then
     exit 1
@@ -27,8 +29,8 @@ eval set -- "$INPUT"
 while true
 do
     case "$1" in
-        -d|--directory)
-            directory=$2
+        -a|--archive)
+            archive=$2
             shift 2
             ;;
         -h|--help)
@@ -64,22 +66,34 @@ fi
 # Ensure presence
 if [ "${directory:0:1}" != "/" ]
 then
-    directory=$(pwd)"/"$directory
+    directory="$PWD/$directory"
 fi
-if ! [[ -e $directory ]]
+if ! [[ -e "$directory" ]]
 then
-    mkdir $directory
+    mkdir "$directory"
+fi
+
+if [ "${archive:0:1}" != "/" ]
+then
+    archive="$PWD/$archive"
 fi
 
 # Create a package list for restore
-dpkg --get-selections | awk '!/deinstall|purge|hold/ {print $1}' > $directory"/"packages.list
+dpkg --get-selections | awk '!/deinstall|purge|hold/ {print $1}' > "$directory/packages.list"
 
 # Get package states
-apt-mark showauto > $directory"/"package-states-auto
-apt-mark showmanual > $directory"/"package-states-manual
+apt-mark showauto > "$directory/package-states-auto"
+apt-mark showmanual > "$directory/package-states-manual"
 
 # Save package sources
-find /etc/apt/sources.list* -type f -name '*.list' -exec bash -c 'echo -e "\n## $1 ";grep "^[[:space:]]*[^#[:space:]]" ${1}' _ {} \; > $directory"/"sources.list
+find /etc/apt/sources.list* -type f -name '*.list' -exec bash -c 'echo -e "\n## $1 ";grep "^[[:space:]]*[^#[:space:]]" ${1}' _ {} \; > "$directory/sources.list"
 
 # Get the trusted keys
-cp /etc/apt/trusted.gpg $directory"/"trusted-keys.gpg
+cp /etc/apt/trusted.gpg "$directory/trusted-keys.gpg"
+
+# Create archive
+cd "$directory"
+tar -czf "$archive" *
+chmod 0777 "$archive"
+cd "$OLDPWD"
+rm -rf "$directory"

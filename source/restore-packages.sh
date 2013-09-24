@@ -1,23 +1,25 @@
 #!/bin/bash
 
+# Default name of the package archive
+archive="packages.tar.gz"
+
+# Name of the temporary directory
+directory="packages.tmp"$$".d"
+
 usage () {
     echo ""
     echo "Usage: "$(basename $0)" [options]"
     echo ""
-    echo "  -d directory | --directory=directory"
-    echo "                 The backup directory with the package dump."
-    echo "                 If ommitted, '$directory' is used."
-    echo "                 If the path is relative, i.e. not starting with a slash '/',"
-    echo "                 it is relative to the current directory."
+    echo "  -a, --archive=filename   The filename of the package dump."
+    echo "                 If ommitted, '$archive' is expected."
     echo "  -h | --help    Show this messsage"
     echo ""
 }
 
 # Get option arguments
 has_error="no"
-directory="packages.backup.d"
 
-INPUT=$(getopt -n "$0" -o d:h --long "directory:,help" -n "GreenCape Package Restore" -- "$@")
+INPUT=$(getopt -n "$0" -o a:h --long "archive:,help" -n "GreenCape Package Restore" -- "$@")
 if [ $? -ne 0 ]
 then
     exit 1
@@ -27,8 +29,8 @@ eval set -- "$INPUT"
 while true
 do
     case "$1" in
-        -d|--directory)
-            directory=$2
+        -a|--archive)
+            archive=$2
             shift 2
             ;;
         -h|--help)
@@ -64,24 +66,42 @@ fi
 # Ensure presence
 if [ "${directory:0:1}" != "/" ]
 then
-    directory=$(pwd)"/"$directory
+    directory="$PWD/$directory"
 fi
-if ! [[ -e $directory ]]
+if ! [[ -e "$directory" ]]
 then
-    echo "Unable to locate package dump. Directory '"$directory"' not found." >&2
+    mkdir "$directory"
+fi
+
+if [ "${archive:0:1}" != "/" ]
+then
+    archive="$PWD/$archive"
+fi
+
+if ! [[ -e $archive ]]
+then
+    echo "Unable to locate package dump. '$archive' not found." >&2
     exit 1;
 fi
 
+# Extract archive
+cd "$directory"
+tar -xzf "$archive"
+
 # Sync the source list
-cp $directory"/"sources.list /etc/apt/sources.list.d/restore.list
+cp "$directory/sources.list" /etc/apt/sources.list.d/restore.list
 
 # Import the trusted keys
-apt-key add $directory"/"trusted-keys.gpg
+apt-key add "$directory/trusted-keys.gpg"
 apt-get update
 
 # Install packages
-xargs -a $directory"/packages.list" apt-get install
+xargs -a "$directory/packages.list" apt-get install
 
 # Restore package states
-xargs -a $directory"/package-states-auto" apt-mark auto
-xargs -a $directory"/package-states-manual" apt-mark manual
+xargs -a "$directory/package-states-auto" apt-mark auto
+xargs -a "$directory/package-states-manual" apt-mark manual
+
+# Cleanup
+cd "$OLDPWD"
+rm -rf "$directory"
