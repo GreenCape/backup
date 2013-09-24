@@ -1,19 +1,23 @@
 #!/bin/bash
 
-# @see http://wiki.ubuntuusers.de/Paketverwaltung/Tipps#Paketliste-zur-Wiederherstellung-erzeugen
-
-# Checking for user - this operation needs root permissions
-if [ "$(whoami)" != 'root' ]
-then
-    echo "You have no permission to run $0 as non-root user. Use sudo!" >&2
-    exit 1;
-fi
+usage () {
+    echo ""
+    echo "Usage: "$(basename $0)" [options]"
+    echo ""
+    echo "  -d directory | --directory=directory"
+    echo "                 The target directory for the package dump."
+    echo "                 If ommitted, '$directory' is used."
+    echo "                 If the path is relative, i.e. not starting with a slash '/',"
+    echo "                 it is relative to the current directory."
+    echo "  -h | --help    Show this messsage"
+    echo ""
+}
 
 # Get option arguments
 has_error="no"
 directory="packages.backup.d"
 
-INPUT=$(getopt -n "$0" -o d: --long "directory:" -n "GreenCape Package Backup" -- "$@")
+INPUT=$(getopt -n "$0" -o d:h --long "directory:,help" -n "GreenCape Package Backup" -- "$@")
 if [ $? -ne 0 ]
 then
     exit 1
@@ -27,6 +31,10 @@ do
             directory=$2
             shift 2
             ;;
+        -h|--help)
+            usage
+            break
+            ;;
         --)
             shift
             break
@@ -39,17 +47,17 @@ do
     esac
 done
 
+# Checking for user - this operation needs root permissions
+if [ "$(whoami)" != 'root' ]
+then
+    echo "You have no permission to run "$(basename $0)" as non-root user. Use sudo!" >&2
+    exit 1;
+fi
+
 # Error check
 if [ "$has_error" == "yes" ]
 then
-    echo ""
-    echo "Usage: "$(basename $0)" [-d directory]"
-    echo ""
-    echo "  -d directory   The target directory for the package dump."
-    echo "                 If ommitted, 'packages.backup.d' is used."
-    echo "                 If the path is relative, i.e. not starting with a slash '/',"
-    echo "                 it is relative to the current directory."
-    echo ""
+    usage
     exit 1
 fi
 
