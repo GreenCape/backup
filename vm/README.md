@@ -8,8 +8,7 @@ Virtual Machine
 ---------------
 
 Create or download a virtual machine corresponding to your setup, for example, Ubuntu 12.04.
-You can find ready-to-run images for VirtualBox at
+A very comprehensive tutorial for the installation and setup of a virtual box is found at
 
-    http://virtualboxes.org/images/
+    http://wiki.ubuntuusers.de/VirtualBox/Installation [de_DE]
 
-Download the package and unpack it.
