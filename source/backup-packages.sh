@@ -86,7 +86,7 @@ apt-mark showauto > "$directory/package-states-auto"
 apt-mark showmanual > "$directory/package-states-manual"
 
 # Save package sources
-find /etc/apt/sources.list* -type f -name '*.list' -exec bash -c 'echo -e "\n## $1 ";grep "^[[:space:]]*[^#[:space:]]" ${1}' _ {} \; > "$directory/sources.list"
+find /etc/apt/sources.list* -type f -name '*.list' -exec bash -c 'grep "^deb" ${1}' _ {} \; | sort > "$directory/sources.list"
 
 # Get the trusted keys
 cp /etc/apt/trusted.gpg "$directory/trusted-keys.gpg"

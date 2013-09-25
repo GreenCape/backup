@@ -89,7 +89,9 @@ cd "$directory"
 tar -xzf "$archive"
 
 # Sync the source list
-cp "$directory/sources.list" /etc/apt/sources.list.d/restore.list
+rm /etc/apt/sources.list.d/restore.list
+find /etc/apt/sources.list* -type f -name '*.list' -exec bash -c 'grep "^deb" ${1}' _ {} \; | sort > "$directory/known-sources.list"
+comm -13 "$directory/known-sources.list" "$directory/sources.list" > /etc/apt/sources.list.d/restore.list
 
 # Import the trusted keys
 apt-key add "$directory/trusted-keys.gpg"
