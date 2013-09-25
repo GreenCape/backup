@@ -12,14 +12,16 @@ usage () {
     echo ""
     echo "  -a, --archive=filename   The filename of the package dump."
     echo "                 If ommitted, '$archive' is expected."
-    echo "  -h | --help    Show this messsage"
+    echo "  -h, --help     Show this messsage"
+    echo "  -v, --verbose  Show more output"
     echo ""
 }
 
 # Get option arguments
 has_error="no"
+verbosity="-qq"
 
-INPUT=$(getopt -n "$0" -o a:h --long "archive:,help" -n "GreenCape Package Restore" -- "$@")
+INPUT=$(getopt -n "$0" -o a:hv --long "archive:,help,verbose" -n "GreenCape Package Restore" -- "$@")
 if [ $? -ne 0 ]
 then
     exit 1
@@ -35,6 +37,10 @@ do
             ;;
         -h|--help)
             usage
+            exit 0
+            ;;
+        -v|--verbose)
+            verbosity="-q"
             break
             ;;
         --)
@@ -98,11 +104,11 @@ apt-key add "$directory/trusted-keys.gpg"
 apt-get update
 
 # Install packages
-xargs -a "$directory/packages.list" apt-get install
+xargs -a "$directory/packages.list" apt-get $verbosity install
 
 # Restore package states
-xargs -a "$directory/package-states-auto" apt-mark auto
-xargs -a "$directory/package-states-manual" apt-mark manual
+xargs -a "$directory/package-states-auto" apt-mark $verbosity auto
+xargs -a "$directory/package-states-manual" apt-mark $verbosity manual
 
 # Cleanup
 cd "$OLDPWD"

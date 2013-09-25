@@ -13,13 +13,15 @@ usage () {
     echo "  -a, --archive=filename   The filename for the package dump."
     echo "                 If ommitted, '$archive' is used."
     echo "  -h, --help     Show this messsage"
+    echo "  -v, --verbose  Show more output"
     echo ""
 }
 
 # Get option arguments
 has_error="no"
+verbosity="-qq"
 
-INPUT=$(getopt -n "$0" -o a:h --long "archive:,help" -n "GreenCape Package Backup" -- "$@")
+INPUT=$(getopt -n "$0" -o a:hv --long "archive:,help,verbose" -n "GreenCape Package Backup" -- "$@")
 if [ $? -ne 0 ]
 then
     exit 1
@@ -35,6 +37,10 @@ do
             ;;
         -h|--help)
             usage
+            exit 0
+            ;;
+        -v|--verbose)
+            verbosity="-q"
             break
             ;;
         --)
