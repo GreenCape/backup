@@ -2,6 +2,7 @@
 
 # Default name of the package archive
 archive="packages.tar.gz"
+tar_options="--atime-preserve=system --preserve-permissions --same-owner"
 
 # Name of the temporary directory
 directory="packages.tmp"$$".d"
@@ -12,16 +13,20 @@ usage () {
     echo ""
     echo "  -a, --archive=filename   The filename for the package dump."
     echo "                 If ommitted, '$archive' is used."
+    echo "  -c, --clean    Exclude caches and backup files"
     echo "  -h, --help     Show this messsage"
+    echo "  -n, --no-settings   Don't backup system settings (/etc)"
     echo "  -v, --verbose  Show more output"
     echo ""
 }
 
 # Get option arguments
 has_error="no"
+clean="no"
+include_etc="yes"
 verbosity="-qq"
 
-INPUT=$(getopt -n "$0" -o a:hv --long "archive:,help,verbose" -n "GreenCape Package Backup" -- "$@")
+INPUT=$(getopt -n "$0" -o a:chnv --long "archive:,clean,help,no-settings,verbose" -n "GreenCape Package Backup" -- "$@")
 if [ $? -ne 0 ]
 then
     exit 1
@@ -35,9 +40,18 @@ do
             archive=$2
             shift 2
             ;;
+        -c|--clean)
+            clean="yes"
+            tar_options="$tar_options --exclude-caches --exclude-backups'"
+            break
+            ;;
         -h|--help)
             usage
             exit 0
+            ;;
+        -n|--no-settings)
+            include_etc="no"
+            break
             ;;
         -v|--verbose)
             verbosity="-q"
@@ -97,8 +111,14 @@ find /etc/apt/sources.list* -type f -name '*.list' -exec bash -c 'grep "^deb" ${
 # Get the trusted keys
 cp /etc/apt/trusted.gpg "$directory/trusted-keys.gpg"
 
+# Optionally include system settings
+if [ "$include_etc" == "yes" ]
+then
+    tar -cf "$directory/etc.tar" $tar_options /etc
+fi
+
 # Create archive
 cd "$directory"
-tar -czf "$archive" *
+tar -czf "$archive" $tar_options *
 cd "$OLDPWD"
 rm -rf "$directory"

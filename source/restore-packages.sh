@@ -2,6 +2,7 @@
 
 # Default name of the package archive
 archive="packages.tar.gz"
+tar_options="--same-permissions --same-owner"
 
 # Name of the temporary directory
 directory="packages.tmp"$$".d"
@@ -13,12 +14,14 @@ usage () {
     echo "  -a, --archive=filename   The filename of the package dump."
     echo "                 If ommitted, '$archive' is expected."
     echo "  -h, --help     Show this messsage"
+    echo "  -n, --no-settings   Don't restore system settings (/etc)"
     echo "  -v, --verbose  Show more output"
     echo ""
 }
 
 # Get option arguments
 has_error="no"
+include_etc="yes"
 verbosity="-qq"
 
 INPUT=$(getopt -n "$0" -o a:hv --long "archive:,help,verbose" -n "GreenCape Package Restore" -- "$@")
@@ -38,6 +41,10 @@ do
         -h|--help)
             usage
             exit 0
+            ;;
+        -n|--no-settings)
+            include_etc="no"
+            break
             ;;
         -v|--verbose)
             verbosity="-q"
@@ -92,7 +99,7 @@ fi
 
 # Extract archive
 cd "$directory"
-tar -xzf "$archive"
+tar -xzf "$archive" $tar_options
 
 # Sync the source list
 rm /etc/apt/sources.list.d/restore.list
@@ -109,6 +116,12 @@ xargs -a "$directory/packages.list" apt-get $verbosity install
 # Restore package states
 xargs -a "$directory/package-states-auto" apt-mark $verbosity auto
 xargs -a "$directory/package-states-manual" apt-mark $verbosity manual
+
+# Optionally include system settings
+if [ "$include_etc" == "yes" ] && [[ -e etc.tar ]]
+then
+    tar -xf etc.tar -C /
+fi
 
 # Cleanup
 cd "$OLDPWD"
