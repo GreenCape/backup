@@ -43,7 +43,7 @@ do
             ;;
         -c|--clean)
             clean="yes"
-            tar_options="$tar_options --exclude-caches --exclude-backups'"
+            tar_options="$tar_options --exclude-caches --exclude-backups"
             break
             ;;
         -h|--help)
