@@ -24,7 +24,8 @@ usage () {
 has_error="no"
 clean="no"
 include_etc="yes"
-verbosity="-qq"
+verbose="no"
+apt_verbosity="-qq"
 
 INPUT=$(getopt -n "$0" -o a:chnv --long "archive:,clean,help,no-settings,verbose" -n "GreenCape Package Backup" -- "$@")
 if [ $? -ne 0 ]
@@ -54,7 +55,9 @@ do
             break
             ;;
         -v|--verbose)
-            verbosity="-q"
+            verbose="yes"
+            apt_verbosity="-q"
+            tar_options="$tar_options --verbose"
             break
             ;;
         --)
@@ -99,26 +102,35 @@ then
 fi
 
 # Create a package list for restore
+if [ "$verbose" == "yes" ]; then echo -e "\nDumping packages list"; fi
 dpkg --get-selections | awk '!/deinstall|purge|hold/ {print $1}' > "$directory/packages.list"
 
 # Get package states
+if [ "$verbose" == "yes" ]; then echo -e "\nDumping package states"; fi
 apt-mark showauto > "$directory/package-states-auto"
 apt-mark showmanual > "$directory/package-states-manual"
 
 # Save package sources
+if [ "$verbose" == "yes" ]; then echo -e "\nDumping package sources"; fi
 find /etc/apt/sources.list* -type f -name '*.list' -exec bash -c 'grep "^deb" ${1}' _ {} \; | sort > "$directory/sources.list"
 
 # Get the trusted keys
+if [ "$verbose" == "yes" ]; then echo -e "\nDumping trusted keys"; fi
 cp /etc/apt/trusted.gpg "$directory/trusted-keys.gpg"
 
 # Optionally include system settings
 if [ "$include_etc" == "yes" ]
 then
-    tar -cf "$directory/etc.tar" $tar_options /etc
+    if [ "$verbose" == "yes" ]; then echo -e "\nDumping system settings"; fi
+    tar -cf "$directory/etc.tar" $tar_options -C / etc
 fi
 
 # Create archive
 cd "$directory"
+if [ "$verbose" == "yes" ]; then echo -e "\nPacking archive '$archive'"; fi
 tar -czf "$archive" $tar_options *
 cd "$OLDPWD"
+if [ "$verbose" == "yes" ]; then echo -e "\nRemoving temporary files"; fi
 rm -rf "$directory"
+
+if [ "$verbose" == "yes" ]; then echo -e "\nDone."; fi

@@ -22,7 +22,7 @@ usage () {
 # Get option arguments
 has_error="no"
 include_etc="yes"
-verbosity="-qq"
+apt_verbosity="-qq"
 
 INPUT=$(getopt -n "$0" -o a:hv --long "archive:,help,verbose" -n "GreenCape Package Restore" -- "$@")
 if [ $? -ne 0 ]
@@ -47,7 +47,8 @@ do
             break
             ;;
         -v|--verbose)
-            verbosity="-q"
+            apt_verbosity="-q"
+            tar_options="$tar_options --verbose"
             break
             ;;
         --)
@@ -111,11 +112,11 @@ apt-key add "$directory/trusted-keys.gpg"
 apt-get update
 
 # Install packages
-xargs -a "$directory/packages.list" apt-get $verbosity install
+xargs -a "$directory/packages.list" apt-get $apt_verbosity install
 
 # Restore package states
-xargs -a "$directory/package-states-auto" apt-mark $verbosity auto
-xargs -a "$directory/package-states-manual" apt-mark $verbosity manual
+xargs -a "$directory/package-states-auto" apt-mark $apt_verbosity auto
+xargs -a "$directory/package-states-manual" apt-mark $apt_verbosity manual
 
 # Optionally include system settings
 if [ "$include_etc" == "yes" ] && [[ -e etc.tar ]]
