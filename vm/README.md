@@ -37,7 +37,11 @@ Once your virtual machine is set up, you can test your backup.
  3. Run the restore script as root:
 
         # cd ~/restore
-        # ./restore-packages.sh > restore.log
+        # ./gc-bak.sh
 
- 4. Check the log for any problems.
+ 4. Check the output for any problems.
+
+ 5. Reboot the virtual machine.
+
+ 6. Check the re-installation using random probes.
 
