@@ -122,7 +122,7 @@ cp /etc/apt/trusted.gpg "$directory/trusted-keys.gpg"
 if [ "$include_system" == "yes" ]
 then
     if [ "$verbose" == "yes" ]; then echo -e "\nDumping system settings"; fi
-    tar -cf "$directory/files.tar" $tar_options -C / etc opt usr var/games var/lib var/local var/mail var/opt var/www
+    tar -cf "$directory/files.tar" $tar_options -C / etc opt usr/local var/games var/lib var/local var/mail var/opt var/www
 fi
 
 # Create archive
