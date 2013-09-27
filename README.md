@@ -1,7 +1,7 @@
 # GreenCape Backup
 
-GreenCape Backup is a versatile backup and restore solution for Linux systems following the
-[Filesystem Hierarchy Standard](http://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard).
+**GreenCape Backup** is a versatile backup and restore solution for Linux systems following the
+Filesystem Hierarchy Standard.
 
 ## Features
 
@@ -15,7 +15,17 @@ GreenCape Backup is a versatile backup and restore solution for Linux systems fo
 
 ## Requirements
 
+There are no requirements but a current Linux system that follows the
+[Filesystem Hierarchy Standard](http://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard).
+
 ## Installation
+
+No installation required. Just copy the script `gc-bak.sh` to your home directory and make it
+executable.
+
+`$ chmod +x gc-bak.sh`
+
+That's all it takes to get ready for a backup.
 
 ## Introduction
 
@@ -72,6 +82,16 @@ directories `/etc`, `/opt`, `/usr/local`, `/var/games`, `/var/lib`, `/var/local`
 
 The system directories may contain cache data or local backups. The inclusion of these files
 can be suppressed using the `-c|--clean` option.
+
+## Examples
+
+Backup packages and system files without cache data and local backup files:
+
+`$ sudo ./gc-bak.sh --backup --clean`
+
+Restore on a new install:
+
+`$ sudo ./gc-bak.sh --restore`
 
 ## Contribution
 
