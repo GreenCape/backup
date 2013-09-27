@@ -120,13 +120,14 @@ Have a bug? Please create an issue here on GitHub!
 
 https://github.com/GreenCape/backup/issues
 
-<!--
+
 ## Twitter Account
 
 Keep up to date on announcements and more by following **GreenCape** on Twitter,
-<a href="http://twitter.com/GreenCape">@GreenCape</a>.
+[@GreenCapeSoft](https://twitter.com/GreenCapeSoft).
 
 
+<!--
 ## Mailing List
 
 Have a question? Ask on our mailing list!
