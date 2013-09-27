@@ -15,7 +15,7 @@ usage () {
     echo "                 If ommitted, '$archive' is used."
     echo "  -c, --clean    Exclude caches and backup files"
     echo "  -h, --help     Show this messsage"
-    echo "  -n, --no-settings   Don't backup system settings (/etc)"
+    echo "  -n, --no-system   Exclude system (/etc, /opt, /root, /usr, /var)"
     echo "  -v, --verbose  Show more output"
     echo ""
 }
@@ -23,11 +23,11 @@ usage () {
 # Get option arguments
 has_error="no"
 clean="no"
-include_etc="yes"
+include_system="yes"
 verbose="no"
 apt_verbosity="-qq"
 
-INPUT=$(getopt -n "$0" -o a:chnv --long "archive:,clean,help,no-settings,verbose" -n "GreenCape Package Backup" -- "$@")
+INPUT=$(getopt -n "$0" -o a:chnv --long "archive:,clean,help,no-system,verbose" -n "GreenCape Package Backup" -- "$@")
 if [ $? -ne 0 ]
 then
     exit 1
@@ -50,8 +50,8 @@ do
             usage
             exit 0
             ;;
-        -n|--no-settings)
-            include_etc="no"
+        -n|--no-system)
+            include_system="no"
             break
             ;;
         -v|--verbose)
@@ -119,10 +119,10 @@ if [ "$verbose" == "yes" ]; then echo -e "\nDumping trusted keys"; fi
 cp /etc/apt/trusted.gpg "$directory/trusted-keys.gpg"
 
 # Optionally include system settings
-if [ "$include_etc" == "yes" ]
+if [ "$include_system" == "yes" ]
 then
     if [ "$verbose" == "yes" ]; then echo -e "\nDumping system settings"; fi
-    tar -cf "$directory/etc.tar" $tar_options -C / etc
+    tar -cf "$directory/files.tar" $tar_options -C / etc opt usr var/games var/lib var/local var/mail var/opt var/www
 fi
 
 # Create archive

@@ -14,17 +14,17 @@ usage () {
     echo "  -a, --archive=filename   The filename of the package dump."
     echo "                 If ommitted, '$archive' is expected."
     echo "  -h, --help     Show this messsage"
-    echo "  -n, --no-settings   Don't restore system settings (/etc)"
+    echo "  -n, --no-system   Exclude system (/etc, /opt, /root, /usr, /var)"
     echo "  -v, --verbose  Show more output"
     echo ""
 }
 
 # Get option arguments
 has_error="no"
-include_etc="yes"
+include_system="yes"
 apt_verbosity="-qq"
 
-INPUT=$(getopt -n "$0" -o a:hv --long "archive:,help,verbose" -n "GreenCape Package Restore" -- "$@")
+INPUT=$(getopt -n "$0" -o a:hnv --long "archive:,help,no-system,verbose" -n "GreenCape Package Restore" -- "$@")
 if [ $? -ne 0 ]
 then
     exit 1
@@ -42,8 +42,8 @@ do
             usage
             exit 0
             ;;
-        -n|--no-settings)
-            include_etc="no"
+        -n|--no-system)
+            include_system="no"
             break
             ;;
         -v|--verbose)
@@ -119,9 +119,9 @@ xargs -a "$directory/package-states-auto" apt-mark $apt_verbosity auto
 xargs -a "$directory/package-states-manual" apt-mark $apt_verbosity manual
 
 # Optionally include system settings
-if [ "$include_etc" == "yes" ] && [[ -e etc.tar ]]
+if [ "$include_system" == "yes" ] && [[ -e etc.tar ]]
 then
-    tar -xf etc.tar -C /
+    tar -xf files.tar $tar_options -C /
 fi
 
 # Cleanup
