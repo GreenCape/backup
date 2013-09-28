@@ -18,6 +18,10 @@ Filesystem Hierarchy Standard.
 There are no requirements but a current Linux system that follows the
 [Filesystem Hierarchy Standard](http://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard).
 
+## Download
+
+Download the latest release from the [Release section](https://github.com/GreenCape/backup/releases).
+
 ## Installation
 
 No installation required. Just copy the script `gc-bak.sh` to your home directory and make it
