@@ -1,13 +1,13 @@
 #!/bin/bash
 
 app_name="GreenCape Backup"
-app_version="0.1.0"
-archive="packages.tar.gz"
+app_version="0.2.0"
+archive="backup.$(date +'%F-%H-%M-%S').tar.gz"
 tar_options="--atime-preserve=system --preserve-permissions --same-owner"
 sys_files="etc opt usr/local var/games var/lib var/local var/mail var/opt var/www"
 
 # Name of the temporary directory
-directory="packages.tmp"$$".d"
+directory="backup."$$".tmp.d"
 
 usage () {
     echo ""
@@ -22,7 +22,7 @@ usage () {
     echo "Options"
     echo "  -a, --archive=filename"
     echo "                 The filename of the dump."
-    echo "                 If ommitted, '$archive' is used."
+    echo "                 If ommitted, 'backup.YYYY-MM-DD-hh-mm-ss.tar.gz' is used."
     echo "  -c, --clean"
     echo "                 Exclude caches and backup files"
     echo "  -n, --no-system"
