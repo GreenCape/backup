@@ -1,0 +1,203 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Backup by GreenCape</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Backup</h1>
+        <p class="header">GreenCape Backup is a versatile backup and restore solution for Linux systems following the Filesystem Hierarchy Standard.</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/GreenCape/backup/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/GreenCape/backup/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/GreenCape/backup">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/GreenCape">GreenCape</a></p>
+
+
+      </header>
+      <section>
+        <h1>
+<a name="greencape-backup" class="anchor" href="#greencape-backup"><span class="octicon octicon-link"></span></a>GreenCape Backup</h1>
+
+<p><strong>GreenCape Backup</strong> is a versatile backup and restore solution for Linux systems following the
+Filesystem Hierarchy Standard.</p>
+
+<h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<p><strong>GreenCape Backup</strong> is a single script solution, which</p>
+
+<ul>
+<li> makes full backup</li>
+<li> uses <code>apt</code> to handle the installed packages, package sources, and trusted keys internally.</li>
+<li> preserves access times, permissions, and owners.</li>
+<li> optionally excludes system files.</li>
+<li> optionally excludes caches and backup files.</li>
+</ul><h2>
+<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
+
+<p>There are no requirements but a current Linux system that follows the
+<a href="http://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard">Filesystem Hierarchy Standard</a>.</p>
+
+<h2>
+<a name="download" class="anchor" href="#download"><span class="octicon octicon-link"></span></a>Download</h2>
+
+<p>Download the latest release from the <a href="https://github.com/GreenCape/backup/releases">Release section</a>.</p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>No installation required. Just copy the script <code>gc-bak.sh</code> to your home directory and make it
+executable.</p>
+
+<p><code>$ chmod +x gc-bak.sh</code></p>
+
+<p>That's all it takes to get ready for a backup.</p>
+
+<h2>
+<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>Everyone working with electronic media should be aware of data protection.
+It happens all over the time that data are irretrievably lost due to hardware faults,
+system errors or user errors (the most common type).
+Through a regular backup the total loss of data can be prevented.
+In particular, facing profound changes to the system, such as partitioning, a backup is a must.</p>
+
+<h3>
+<a name="terms" class="anchor" href="#terms"><span class="octicon octicon-link"></span></a>Terms</h3>
+
+<ul>
+<li> <strong>Full Backup</strong>: Backup of the entire dataset.</li>
+<li> <strong>Differential Backup</strong>: Contains all the changes that have occurred since the last full backup.</li>
+<li> <strong>Incremental Backup</strong>: Contains all the changes that were made since the last backup
+(full backup or incremental backup).</li>
+<li> <strong>Images</strong>: Backup of complete partitions or disks</li>
+<li>
+<p><strong>RAID</strong>: RAID array of two or more hard drives in which all data is stored several times
+(redundant) and one is protected against failure of one or more individual drives.
+There are different RAID levels, of which only RAID 0 is inappropriate.</p>
+
+<p><strong>Warning: RAID is no substitute for a data backup!</strong></p>
+</li>
+</ul><h3>
+<a name="strategies" class="anchor" href="#strategies"><span class="octicon octicon-link"></span></a>Strategies</h3>
+
+<p>The following questions should be asked by everyone who is concerned with the security of his data:</p>
+
+<ul>
+<li> What data should I back up and where do I find it?</li>
+<li> How often should a backup be performed?</li>
+<li> Where should I store the backup?</li>
+<li> Where should I deposit the backup media?</li>
+</ul><h2>
+<a name="backup-with-greencape-backup" class="anchor" href="#backup-with-greencape-backup"><span class="octicon octicon-link"></span></a>Backup with GreenCape Backup</h2>
+
+<p><strong>GreenCape Backup</strong> is made to make backups easy. It is able to backup a complete system, so it
+can be restored on a fresh install. Internally, it uses <code>apt</code> to handle the installed packages,
+package sources, and trusted keys.</p>
+
+<h3>
+<a name="operation-mode" class="anchor" href="#operation-mode"><span class="octicon octicon-link"></span></a>Operation mode</h3>
+
+<p>The operation modes <em>backup</em> or <em>restore</em> are invoked using the <code>-b|--backup</code> or <code>-r|--restore</code>
+switches respectively. <code>--backup</code> is the default operation mode.</p>
+
+<h3>
+<a name="packages" class="anchor" href="#packages"><span class="octicon octicon-link"></span></a>Packages</h3>
+
+<p><strong>GreenCape Backup</strong> creates a list of all installed packages, their states, corresponding
+sources and trusted keys. This information is used during a restore to re-install those packages.</p>
+
+<h3>
+<a name="system-files" class="anchor" href="#system-files"><span class="octicon octicon-link"></span></a>System files</h3>
+
+<p>As per default, <strong>GreenCape Backup</strong> includes all system files, i.e., the content of the
+directories <code>/etc</code>, <code>/opt</code>, <code>/usr/local</code>, <code>/var/games</code>, <code>/var/lib</code>, <code>/var/local</code>, <code>/var/mail</code>,
+<code>/var/opt</code>, and <code>/var/www</code>. The inclusion of the system files can be suppressed by using the
+<code>-n|--no-system</code> option.</p>
+
+<p>The system directories may contain cache data or local backups. The inclusion of these files
+can be suppressed using the <code>-c|--clean</code> option.</p>
+
+<h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<p>Backup packages and system files without cache data and local backup files:</p>
+
+<p><code>$ sudo ./gc-bak.sh --backup --clean</code></p>
+
+<p>Restore on a new install:</p>
+
+<p><code>$ sudo ./gc-bak.sh --restore</code></p>
+
+<h2>
+<a name="contribution" class="anchor" href="#contribution"><span class="octicon octicon-link"></span></a>Contribution</h2>
+
+<h2>
+<a name="versioning" class="anchor" href="#versioning"><span class="octicon octicon-link"></span></a>Versioning</h2>
+
+<p>For transparency and insight into our release cycle, and for striving to maintain backwards
+compatibility, <strong>GreenCape Backup</strong> will be maintained under the Semantic Versioning guidelines
+as much as possible.</p>
+
+<p>Releases will be numbered with the follow format:</p>
+
+<p><code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code></p>
+
+<p>And constructed with the following guidelines:</p>
+
+<ul>
+<li>Breaking backwards compatibility bumps the major</li>
+<li>New additions without breaking backwards compatibility bumps the minor</li>
+<li>Bug fixes and misc changes bump the patch</li>
+</ul><p>For more information on SemVer, please visit <a href="http://semver.org/">http://semver.org/</a>.</p>
+
+<h2>
+<a name="bug-tracker" class="anchor" href="#bug-tracker"><span class="octicon octicon-link"></span></a>Bug Tracker</h2>
+
+<p>Have a bug? Please create an issue here on GitHub!</p>
+
+<p><a href="https://github.com/GreenCape/backup/issues">https://github.com/GreenCape/backup/issues</a></p>
+
+<h2>
+<a name="twitter-account" class="anchor" href="#twitter-account"><span class="octicon octicon-link"></span></a>Twitter Account</h2>
+
+<p>Keep up to date on announcements and more by following <strong>GreenCape</strong> on Twitter,
+<a href="https://twitter.com/GreenCapeSoft">@GreenCapeSoft</a>.</p>
+
+
+
+<h2>
+<a name="authors" class="anchor" href="#authors"><span class="octicon octicon-link"></span></a>Authors</h2>
+
+<p><strong>Niels Braczek</strong> [ <a href="http://twitter.com/hiPHPie">Twitter</a> | <a href="http://github.com/nibra">GitHub</a> ]</p>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Copyright ©2013 BSDS Braczek Software- und DatenSysteme. All rights reserved.</p>
+
+<p>Licensed under the GNU General Public License version 2 or later: <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html</a></p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
