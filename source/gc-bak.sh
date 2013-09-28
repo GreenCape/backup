@@ -4,7 +4,7 @@ app_name="GreenCape Backup"
 app_version="0.2.0"
 archive="backup.$(date +'%F-%H-%M-%S').tar.gz"
 tar_options="--atime-preserve=system --preserve-permissions --same-owner"
-sys_files="etc opt usr/local var/games var/lib var/local var/mail var/opt var/www"
+sys_files="etc opt root usr/local var/games var/lib var/local var/mail var/opt var/www"
 
 # Name of the temporary directory
 directory="backup."$$".tmp.d"
