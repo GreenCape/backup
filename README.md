@@ -29,7 +29,11 @@ executable.
 
 `$ chmod +x gc-bak.sh`
 
-That's all it takes to get ready for a backup.
+That's all it takes to get ready for a backup. See
+
+`./gc-bak.sh --help`
+
+for a full list of options.
 
 ## Introduction
 
@@ -80,7 +84,7 @@ sources and trusted keys. This information is used during a restore to re-instal
 ### System files
 
 As per default, **GreenCape Backup** includes all system files, i.e., the content of the
-directories `/etc`, `/opt`, `/usr/local`, `/var/games`, `/var/lib`, `/var/local`, `/var/mail`,
+directories `/etc`, `/opt`, `/root`, `/usr/local`, `usr/share`, `/var/games`, `/var/lib`, `/var/local`, `/var/mail`,
 `/var/opt`, and `/var/www`. The inclusion of the system files can be suppressed by using the
 `-n|--no-system` option.
 
@@ -92,6 +96,10 @@ can be suppressed using the `-c|--clean` option.
 Backup packages and system files without cache data and local backup files:
 
 `$ sudo ./gc-bak.sh --backup --clean`
+
+Same backup, now including all user's home directory:
+
+`$ sudo ./gc-bak.sh --backup --clean --users`
 
 Restore on a new install:
 
